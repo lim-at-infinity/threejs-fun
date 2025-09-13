@@ -22,8 +22,24 @@ scene.add(hemiLight);
 //load model from media directory
 const loader = new GLTFLoader();
 loader.load( 'media/models/skull.glb', function(gltf) {
-    console.log('GLTF Loaded: ', gltf);
-    scene.add(gltf.scene);
+    const model = gltf.scene;
+
+    //logging bounding box
+    const box = new THREE.Box3().setFromObject(model);
+    const size = new THREE.Vector3();
+    const center = new THREE.Vector3();
+    box.getSize(size);
+    box.getCenter(center);
+    console.log('Model size:', size);
+    console.log('Model center:', center);
+
+    //Center the model at origin
+    model.position.sub(center); //Move center to (0,0,0)
+
+    //Scale it up/down to fit into view
+    model.scale.set(10, 10, 10);
+
+    scene.add(model);
 }, undefined, function ( error ) {
     console.error( error );
 });
